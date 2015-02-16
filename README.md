@@ -28,7 +28,7 @@ can even organize pseudo class transitions if it's DRY / helpful. see :hover bel
       }
     }
 
-### Output:
+#### Output:
 
     #parentelement #results, .title { 
       transition: height 0.6s ease-in-out;
@@ -40,7 +40,8 @@ can even organize pseudo class transitions if it's DRY / helpful. see :hover bel
     }
     #parentelement #main .fa:hover { color: blue; }
 
-## Extreme (bad) Example of Namespacing with Roots
+## Using from() and to()
+### Also an Extreme (bad) Example of Namespacing with Roots
 
 dot or hash delimited selectors can be the main element,
 but space descendants must be in $root or $properties-root variables
@@ -59,7 +60,7 @@ but space descendants must be in $root or $properties-root variables
       }
     }
 
-### Output:
+#### Output:
 
     body > .block.left #main #inner.results {
       transition: height 0.6s ease-in-out;
