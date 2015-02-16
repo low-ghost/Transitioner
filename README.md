@@ -11,7 +11,7 @@ write "extend #id-name" as 2nd arg to extend previous transition rules
 provide parent element(s) (multiple selectors written as usual), or don't
 can even organize pseudo class transitions if it's DRY / helpful. see :hover below
 
-## Example:
+## Example using Transitioner and extend with root:
 
     $root: "#parentelement";
     .full-height {
@@ -45,9 +45,10 @@ can even organize pseudo class transitions if it's DRY / helpful. see :hover bel
 
 dot or hash delimited selectors can be the main element,
 but space descendants must be in $root or $properties-root variables
+Also note that a root must be passed to from() if used in Transitioner
 
     $root: "body > .block.left #main";
-    $properties-root: "left";
+    $properties-root: ".left";
 
     .full-height {
       @include transitioner("#inner.results", height 0.6s ease-in-out, $root, $properties-root){
@@ -61,6 +62,10 @@ but space descendants must be in $root or $properties-root variables
     }
 
 #### Output:
+    
+    // Duplicate selectors are left on the assumption that the transition will be
+    // extended and because you can’t check for preexisting selectors
+    // as far as I know. Consider it a TODO.
 
     body > .block.left #main #inner.results {
       transition: height 0.6s ease-in-out;
