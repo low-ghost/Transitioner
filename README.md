@@ -5,11 +5,17 @@
     .root .selector { ...transition rules... }
     .selector.classNameToBeAnimated { ...properties to be transitioned... }
 
-great for organizing multiple transitions when adding a single class via js
-feed it classes in quotes, anything else can go either way
-write "extend #id-name" as 2nd arg to extend previous transition rules
-provide parent element(s) (multiple selectors written as usual), or don't
-can even organize pseudo class transitions if it's DRY / helpful. see :hover below
+Great for organizing multiple transitions when adding a single class via js.
+
+Feed it classes in quotes, anything else can go either way.
+
+##### Providing parent element(s):
+Dot or hash delimited selectors can be the main element, but spaced descendants must be in $root or $properties-root variables.
+
+##### Extending:
+Write "extend #id-name" as 2nd arg to extend previous transition rules
+
+You can even organize pseudo class transitions if it's DRY / helpful. see :hover below
 
 ## Example using Transitioner and extend with root:
 
@@ -43,8 +49,6 @@ can even organize pseudo class transitions if it's DRY / helpful. see :hover bel
 ## Using from() and to()
 ### Also an Extreme (bad) Example of Namespacing with Roots
 
-dot or hash delimited selectors can be the main element,
-but space descendants must be in $root or $properties-root variables
 Also note that a root must be passed to from() if used in Transitioner
 
     $root: "body > .block.left #main";
