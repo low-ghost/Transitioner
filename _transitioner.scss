@@ -1,0 +1,61 @@
+@import 'helpers/functions'
+
+// changes "#main .fa" to "main-subclass-fa-transition", for instance
+// b/c sass can't extend nested selectors
+@function to-placeholder-name($value){
+  @return str-replace(
+            str-replace(
+              rm-sp($value, '-'), '.', 'subclass-'), '#', 'subid-')
+          + "-transition";
+}
+
+// drops a placeholder for given element and transition
+@mixin placeholder-transition($name, $transition) {
+  %#{$name} { transition: #{$transition}; }
+}
+
+@mixin transitioner($selector, $transition, $root: false, $properties-root: false) {
+  $transition: to-string($transition);
+  $selector: to-string($selector);
+  @at-root {
+    $placeholder: to-placeholder-name($selector);
+    $s-for-transition: $selector;
+    $s-for-properties: $selector + &;
+    @if str-index($transition, extend) {
+      $placeholder: to-placeholder-name(str-slice($transition, 8));
+    } @else {
+      @include placeholder-transition($placeholder, $transition);
+    }
+    @if $root {
+      $s-for-transition: $root $selector;
+    }
+    @if $properties-root {
+      $s-for-properties: $properties-root $selector + &;
+    }
+    #{$s-for-transition} { @extend %#{$placeholder}; }
+    #{$s-for-properties} { @content; }
+  }
+}
+
+//adds initial properties. Must use to() mixin, otherwise the "from"
+//propetries will be included after the properties with the added class,
+//which may overwrite them and cause unexpected results
+@mixin from($root: ""){
+  @at-root{
+    $list: simple-selectors(rm-sp(to-string(&)));
+    //guarantees $root and $list formatting are maintained while added
+    //class is dropped
+    $root-remove: rm-sp(to-string($root));
+    $prop-root-remove: rm-sp(to-string($properties-root));
+    $list: str-remove(flatten-list(rm-last($list)), $root-remove, $prop-root-remove);
+    #{($root $list)}{
+      @content;
+    }
+  }
+}
+
+@mixin to(){
+  @at-root{
+    #{&}{ @content; }
+  }
+}

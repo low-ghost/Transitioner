@@ -1,0 +1,53 @@
+@function to-string($value) {
+  @return inspect(#{$value});
+}
+
+// general string replace functionality! what's next, regex?
+// also providing a fourth argument will prefix it to returned string
+@function str-replace($string, $remove, $replace, $accumulator: "") {
+  $pos: str-index($string, $remove);
+  @if $remove == "" {
+    @warn "no argument provided for $remove";
+  } @else if $replace == $remove {
+    @return $string;
+  } @else if $pos {
+    $accumulator: $accumulator + str-slice($string, 1, $pos - 1) + $replace;
+    $part2: str-slice($string, $pos + str-length($remove));
+    @return str-replace($part2, $remove, $replace, $accumulator);
+  }
+  @return $accumulator + $string;
+}
+
+@function str-remove($string, $list...) {
+  @for $i from 1 through length($list) {
+    $string: str-replace($string, to-string(nth($list, $i)), "");
+  }
+  @return $string;
+}
+
+@function rm-sp($string, $replace: ""){
+  @return str-replace($string, " ", $replace);
+}
+
+@function rm-last($list){
+  @return set-nth($list, length($list), "");
+}
+
+//creates a string by removing commas and spaces from a list
+@function flatten-list($list){
+  @return rm-sp(str-replace(to-string($list), ",", ""));
+};
+
+//this one is borrowed from hugo giraudel
+@function remove($list, $value, $recursive: false) {
+  $result: ();
+  @for $i from 1 through length($list) {
+    @if type-of(nth($list, $i)) == list and $recursive {
+      $result: append($result, remove(nth($list, $i), $value, $recursive));
+    }
+    @else if nth($list, $i) != $value {
+      $result: append($result, nth($list, $i));
+    }
+  }
+  @return $result;
+}
