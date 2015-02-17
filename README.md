@@ -56,7 +56,7 @@ the added class can include nested selector in the same way as normal sass
     $inner-results: “#inner .results”;
     $root: “body > .block.left #main”;
     $properties-root: “.left”;
-    
+
     .full-height {
 
       @include transitioner($inner-results, height 0.6s ease-in-out, $root, $properties-root) {
@@ -74,7 +74,7 @@ the added class can include nested selector in the same way as normal sass
             @extend %height0;
           }
           @include to(){
-            height:40px 500px;
+            height: 500px;
           }
         }
       }
@@ -99,5 +99,5 @@ the added class can include nested selector in the same way as normal sass
     }
 
     .left #inner > .results.full-height:hover {
-      height: 100%;
+      height: 500px;
     }
