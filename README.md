@@ -52,8 +52,13 @@ You can even organize pseudo class transitions if it's DRY / helpful. see :hover
 Also note that a root must be passed to from() if used in Transitioner and that
 the added class can include nested selector in the same way as normal sass
 
+
+    $inner-results: “#inner .results”;
+    $root: “body > .block.left #main”;
+    $properties-root: “.left”;
+    
     .full-height {
-      $inner-results: “#inner .results”;
+
       @include transitioner($inner-results, height 0.6s ease-in-out, $root, $properties-root) {
         @include from($root) {
           @extend %height0;
@@ -62,6 +67,7 @@ the added class can include nested selector in the same way as normal sass
           height: 100%;
         }
       }
+
       &:hover{
         @include transitioner($inner-results, extend $inner-results, $root, $properties-root) {
           @include from($root) {
