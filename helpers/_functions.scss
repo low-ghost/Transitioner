@@ -1,3 +1,9 @@
+// Helper Functions
+
+//==========================
+// String Helper Funtions
+//==========================
+
 @function to-string($value) {
   @return inspect(#{$value});
 }
@@ -29,25 +35,32 @@
   @return str-replace($string, " ", $replace);
 }
 
+// you could almost do this without the accumulator but the final append
+// is important for a proper list
+@function str-explode($string, $separator, $list: ()){
+  $index: str-index($string, $separator);
+  @if $index == null {
+    @return append($list, $string);
+  }
+  $l: length($separator);
+  $list: append($list, str-slice($string, 1, $index - $l));
+  $remaining: str-slice($string, $l + $index);
+  @return str-explode($remaining, $separator, $list);
+}
+
+//========================
+// List Helper Functions
+//========================
+
 @function rm-last($list){
   @return set-nth($list, length($list), "");
 }
 
-//creates a string by removing commas and spaces from a list
-@function flatten-list($list){
-  @return rm-sp(str-replace(to-string($list), ",", ""));
-};
-
-//this one is borrowed from hugo giraudel
-@function remove($list, $value, $recursive: false) {
-  $result: ();
-  @for $i from 1 through length($list) {
-    @if type-of(nth($list, $i)) == list and $recursive {
-      $result: append($result, remove(nth($list, $i), $value, $recursive));
-    }
-    @else if nth($list, $i) != $value {
-      $result: append($result, nth($list, $i));
-    }
-  }
-  @return $result;
+@function get-last($list){
+  @return nth($list, length($list))
 }
+
+//creates a string by removing commas and spaces from a list
+@function flaten-list($list, $separator: ","){
+  @return rm-sp(str-replace(to-string($list), $separator, ""));
+};

@@ -1,4 +1,4 @@
-@import 'helpers/functions';
+// Main Transitioner sass file. Organizes transitions by added class
 
 // changes "#main .fa" to "main-subclass-fa-transition", for instance
 // b/c sass can't extend nested selectors
@@ -37,18 +37,11 @@
   }
 }
 
-//adds initial properties. Must use to() mixin, otherwise the "from"
-//propetries will be included after the properties with the added class,
-//which may overwrite them and cause unexpected results
 @mixin from($root: ""){
   @at-root{
-    $list: simple-selectors(rm-sp(to-string(&)));
-    //guarantees $root and $list formatting are maintained while added
-    //class is dropped
-    $root-remove: rm-sp(to-string($root));
-    $prop-root-remove: rm-sp(to-string($properties-root));
-    $list: str-remove(flatten-list(rm-last($list)), $root-remove, $prop-root-remove);
-    #{($root $list)}{
+    $x: str-replace(to-string(&), $properties-root, "");
+    $added-class: "." + get-last(str-explode($x, "."));
+    #{$root str-remove($x, $added-class)}{
       @content;
     }
   }
