@@ -1,4 +1,8 @@
+@import "helpers/functions"
+
+//===================================================================
 // Main Transitioner sass file. Organizes transitions by added class
+//===================================================================
 
 // changes "#main .fa" to "main-subclass-fa-transition", for instance
 // b/c sass can't extend nested selectors
