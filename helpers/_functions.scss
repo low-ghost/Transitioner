@@ -48,6 +48,19 @@
   @return str-explode($remaining, $separator, $list);
 }
 
+@mixin stringToCss($string){
+  $css-properties: str-explode($string, ";");
+  @each $css in $css-properties{
+    $pieces: str-explode($css, ":");
+    @if length($pieces) == 2 {
+      #{nth($pieces, 1)}: nth($pieces, 2);
+    } @else if str-index($css, "extend"){
+      $extending: str-slice($css, str-index($css, " ") + 1);
+      @extend #{$extending};
+    }
+  }
+}
+
 //========================
 // List Helper Functions
 //========================
@@ -64,3 +77,15 @@
 @function flaten-list($list, $separator: ","){
   @return rm-sp(str-replace(to-string($list), $separator, ""));
 };
+
+//=========================
+// Map Helper Functions
+//=========================
+
+//specific to Transitioner's purposes
+@function buildTransitionString($rules){
+  $duration: map-get($rules, duration);
+  $transitioned: map-get($rules, transitioned);
+  $easing: map-get($rules, easing);
+  @return $transitioned + " " + $duration + " " + $easing;
+}
