@@ -56,3 +56,30 @@
     #{&}{ @content; }
   }
 }
+
+@mixin executeTransitioner($transitions){
+  @each $class in map-keys($transitions){
+    $selector-map: map-get($transitions, $class);
+    @each $selector in map-keys($selector-map){
+      $rules-map: map-get($selector-map, $selector);
+      $properties: map-get($rules-map, properties);
+      $css-transition: buildTransitionString($rules-map);
+      #{$class} { 
+        @include transitioner($selector, $css-transition){
+          @if type-of($properties) == string {
+            @include stringToCss($properties);
+          } @else {
+            $from: map-get($properties, from);
+            @include from(){
+              @include stringToCss($from);
+            }
+            $to: map-get($properties, to);
+            @include to(){
+              @include stringToCss($to);
+            }
+          }
+        }
+      }
+    }
+  }
+}
