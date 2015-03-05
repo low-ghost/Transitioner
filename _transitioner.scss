@@ -62,20 +62,38 @@
     $selector-map: map-get($transitions, $class);
     @each $selector in map-keys($selector-map){
       $rules-map: map-get($selector-map, $selector);
-      $properties: map-get($rules-map, properties);
-      $css-transition: buildTransitionString($rules-map);
-      #{$class} { 
-        @include transitioner($selector, $css-transition){
-          @if type-of($properties) == string {
-            @include stringToCss($properties);
+      @if list-contains(map-keys($rules-map), "extend") {
+        $extend: map-get($rules-map, extend);
+        $to-extend-rules-map: map-get($selector-map, $extend);
+        $to-extend-properties: map-get($to-extend-rules-map, properties);
+        
+        @if map-has-key($rules-map, properties) != true {
+          @if list-contains(map-keys($to-extend-properties), "from"){
+            $to-extend-rules-map: map-merge($to-extend-rules-map, (properties: ( from:"@extend " + $extend, to: "@extend " + $extend + $class)));
           } @else {
-            $from: map-get($properties, from);
-            @include from(){
-              @include stringToCss($from);
-            }
-            $to: map-get($properties, to);
-            @include to(){
-              @include stringToCss($to);
+            $obj: (properties: "@extend " + $extend + $class);
+            $to-extend-rules-map: map-merge($to-extend-rules-map, $obj);
+          }
+        } 
+        $rules-map: map-merge($to-extend-rules-map, $rules-map);
+      }
+      @if length($rules-map) > 1 {
+        $properties: map-get($rules-map, properties);
+        $css-transition: build-transition-string($rules-map);
+        /*#{$css-transition}*/
+        #{$class} { 
+          @include transitioner($selector, $css-transition){
+            @if type-of($properties) == string {
+              @include string-to-css($properties);
+            } @else {
+              $from: map-get($properties, from);
+              @include from(){
+                @include string-to-css($from);
+              }
+              $to: map-get($properties, to);
+              @include to(){
+                @include string-to-css($to);
+              }
             }
           }
         }
