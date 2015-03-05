@@ -48,7 +48,7 @@
   @return str-explode($remaining, $separator, $list);
 }
 
-@mixin stringToCss($string){
+@mixin string-to-css($string){
   $css-properties: str-explode($string, ";");
   @each $css in $css-properties{
     $pieces: str-explode($css, ":");
@@ -73,6 +73,13 @@
   @return nth($list, length($list))
 }
 
+@function list-contains($list, $match){
+  @each $item in $list {
+    @if $item == $match { @return true; }
+  }
+  @return false;
+}
+
 //creates a string by removing commas and spaces from a list
 @function flaten-list($list, $separator: ","){
   @return rm-sp(str-replace(to-string($list), $separator, ""));
@@ -83,7 +90,7 @@
 //=========================
 
 //specific to Transitioner's purposes
-@function buildTransitionString($rules){
+@function build-transition-string($rules){
   $duration: map-get($rules, duration);
   $transitioned: map-get($rules, transitioned);
   $easing: map-get($rules, easing);
