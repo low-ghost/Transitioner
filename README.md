@@ -8,8 +8,8 @@
 Great for organizing multiple transitions when adding a single class via js.
 Feed it classes in quotes, anything else can go either way.
 
-## Sass Maps Usage
-The easiest way to use is with a JSON like sass maps configuration object. Here's an example:
+## Configuring with Sass Maps
+The easiest way to use Transitioner is with a JSON like sass maps configuration object. Here's an example:
 
     $transitions: (
       ".full-height": (
@@ -51,6 +51,8 @@ This gets transformed into:
 
 Organizing from and to in this way makes more sense. Soon enough, I'll include a Sass to json converter so a common config file between the js and sass components. Including an extend key merges the new object with the specified target.
 
+That's all you need (other than an import or two to the right files).
+
 ###Another Way, Directly invoking Transitioner
 
 ##### Providing parent element(s):
@@ -62,7 +64,7 @@ Write "extend #id-name" as 2nd arg to extend previous transition rules
 
 You can even organize pseudo class transitions if it's DRY / helpful. see :hover below
 
-## Example using Transitioner and extend with root:
+##### Example using Transitioner and extend with root:
 
     $root: "#parentelement";
     .full-height {
@@ -79,7 +81,7 @@ You can even organize pseudo class transitions if it's DRY / helpful. see :hover
       }
     }
 
-#### Output:
+##### Output:
 
     #parentelement #results, .title { 
       transition: height 0.6s ease-in-out;
@@ -91,8 +93,8 @@ You can even organize pseudo class transitions if it's DRY / helpful. see :hover
     }
     #parentelement #main .fa:hover { color: blue; }
 
-## Using from() and to()
-### Also an Extreme (bad) Example of Namespacing with Roots
+##### Using from() and to()
+###### Also an Extreme (bad) Example of Namespacing with Roots
 
 Also note that a root must be passed to from() if used in Transitioner and that
 the added class can include nested selector in the same way as normal sass
