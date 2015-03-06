@@ -41,11 +41,20 @@
   }
 }
 
-@mixin from($root: ""){
-  @at-root{
-    $x: str-replace(to-string(&), $properties-root, "");
+@mixin from($root: "", $properties-root: "") {
+  @at-root {
+    $x: to-string(&);
+    $prefix: $root + "-";
+    @if $properties-root { 	 	
+      $x: str-replace(to-string(&), $properties-root, "");
+      $prefix: $root;
+    }
     $added-class: "." + get-last(str-explode($x, "."));
-    #{$root str-remove($x, $added-class)}{
+    //placeholder for json use only
+    %#{to-placeholder-name($prefix + str-remove($x, $added-class))}{
+      @content;
+    }
+    #{$root str-remove($x, $added-class)} {
       @content;
     }
   }
@@ -68,8 +77,9 @@
         $to-extend-properties: map-get($to-extend-rules-map, properties);
         
         @if map-has-key($rules-map, properties) != true {
-          @if list-contains(map-keys($to-extend-properties), "from"){
-            $to-extend-rules-map: map-merge($to-extend-rules-map, (properties: ( from:"@extend " + $extend, to: "@extend " + $extend + $class)));
+         @if list-contains(map-keys($to-extend-properties), "from"){
+           $from-placeholder: "%#{to-placeholder-name(map-get($to-extend-rules-map, root) + "-" + $extend)}";
+            $to-extend-rules-map: map-merge($to-extend-rules-map, (properties: ( from:"@extend " + $from-placeholder, to: "@extend " + $extend + $class)));
           } @else {
             $obj: (properties: "@extend " + $extend + $class);
             $to-extend-rules-map: map-merge($to-extend-rules-map, $obj);
@@ -77,23 +87,22 @@
         } 
         $rules-map: map-merge($to-extend-rules-map, $rules-map);
       }
-      @if length($rules-map) > 1 {
-        $properties: map-get($rules-map, properties);
-        $css-transition: build-transition-string($rules-map);
-        /*#{$css-transition}*/
-        #{$class} { 
-          @include transitioner($selector, $css-transition){
-            @if type-of($properties) == string {
-              @include string-to-css($properties);
-            } @else {
-              $from: map-get($properties, from);
-              @include from(){
-                @include string-to-css($from);
-              }
-              $to: map-get($properties, to);
-              @include to(){
-                @include string-to-css($to);
-              }
+      $properties: map-get($rules-map, properties);
+      $root: map-get($rules-map, root);
+      $properties-root: map-get($rules-map, properties-root);
+      $css-transition: build-transition-string($rules-map);
+      #{$class} { 
+        @include transitioner($selector, $css-transition, $root, $properties-root){
+          @if type-of($properties) == string {
+            @include string-to-css($properties);
+          } @else {
+            $from: map-get($properties, from);
+            @include from($root, $properties-root){
+              @include string-to-css($from);
+            }
+            $to: map-get($properties, to);
+            @include to(){
+              @include string-to-css($to);
             }
           }
         }
