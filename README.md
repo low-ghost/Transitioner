@@ -8,6 +8,51 @@
 Great for organizing multiple transitions when adding a single class via js.
 Feed it classes in quotes, anything else can go either way.
 
+## Sass Maps Usage
+The easiest way to use is with a JSON like sass maps configuration object. Here's an example:
+
+    $transitions: (
+      ".full-height": (
+        "#h1": (
+          properties: (
+            from: "@extend %height0;",
+            to: "height:350px; color:white;",
+          ),
+          transitioned: "height",
+          duration: "0.3s",
+          easing: "linear",
+          root: "#main",
+          properties-root: "#props"
+        ),
+        "#h2": (
+          extend: "#h1",
+          duration:"1.0s",
+          root: "#right",
+        )
+      )
+    );
+    @include executeTransitioner($transitions);
+
+This gets transformed into:
+
+    #right #h2, #main #h1 {
+      height: 0px;
+    }
+    #main #h1 {
+      transition: height 0.3s linear;
+    }
+    #props #h1.full-height, #props #h2.full-height {
+      height: "350px";
+      color: "white";
+    }
+    #right #h2 {
+      transition: height 1.0s linear;
+    }
+
+Organizing from and to in this way makes more sense. Soon enough, I'll include a Sass to json converter so a common config file between the js and sass components. Including an extend key merges the new object with the specified target.
+
+###Another Way, Directly invoking Transitioner
+
 ##### Providing parent element(s):
 You can provide namespacing elements for the transition rules selector by passing a third
 argument to Transitioner, and for the selector.classNameToBeAnimated as a the argument.
